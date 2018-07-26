@@ -8,7 +8,7 @@ public class DocumentStoreTest {
 
     @Test
     public void testInsertAndFindDocument() {
-        DocumentStore store = new DocumentStore();
+        DocumentStore store = new InMemoryDocumentStore();
         String document = "foo bar baz";
         String documentId = store.insert(document);
         String foundDocument = store.find(documentId);
