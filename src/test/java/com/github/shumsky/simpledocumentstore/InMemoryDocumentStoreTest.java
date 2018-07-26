@@ -2,7 +2,10 @@ package com.github.shumsky.simpledocumentstore;
 
 import org.junit.Test;
 
+import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class InMemoryDocumentStoreTest {
 
@@ -19,10 +22,14 @@ public class InMemoryDocumentStoreTest {
     @Test
     public void testFindDocumentByKeyword() {
         DocumentStore store = new InMemoryDocumentStore(index);
+
         String document = "foo bar";
         String documentId = "123";
         store.insert(documentId, document);
-        String foundDocument = store.findByKeywords("bar");
-        assertEquals(document, foundDocument);
+
+        Set<String> foundDocumentIds = store.findByKeywords("bar");
+
+        assertEquals(foundDocumentIds.size(), 1);
+        assertTrue(foundDocumentIds.contains(documentId));
     }
 }
