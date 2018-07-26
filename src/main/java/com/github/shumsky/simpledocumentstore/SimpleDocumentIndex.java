@@ -1,9 +1,6 @@
 package com.github.shumsky.simpledocumentstore;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SimpleDocumentIndex implements DocumentIndex {
@@ -25,6 +22,6 @@ public class SimpleDocumentIndex implements DocumentIndex {
     @Override
     public Set<String> search(String keyword) {
         Set<String> documentIds = index.get(keyword);
-        return documentIds != null ? documentIds : new HashSet<>();
+        return documentIds != null ? Collections.unmodifiableSet(documentIds): Collections.emptySet();
     }
 }

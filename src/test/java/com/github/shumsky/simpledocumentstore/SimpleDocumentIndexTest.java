@@ -61,4 +61,17 @@ public class SimpleDocumentIndexTest {
 
         assertEquals(documents.size(), 0);
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testSearchResultIsImmutable() {
+        String document = "foo bar";
+        String documentId = "101";
+
+        DocumentIndex index = new SimpleDocumentIndex();
+        index.add(document, documentId);
+
+        Set<String> documents = index.search("foo");
+
+        documents.add("new_id");
+    }
 }
