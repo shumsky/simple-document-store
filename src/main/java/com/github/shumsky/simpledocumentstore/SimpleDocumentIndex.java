@@ -1,8 +1,11 @@
 package com.github.shumsky.simpledocumentstore;
 
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class SimpleDocumentIndex implements DocumentIndex {
 
     private final ConcurrentHashMap<String, Set<String>> index = new ConcurrentHashMap<>();

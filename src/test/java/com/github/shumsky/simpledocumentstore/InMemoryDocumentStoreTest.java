@@ -11,7 +11,7 @@ public class InMemoryDocumentStoreTest {
 
     @Test
     public void testInsertAndFindDocument() {
-        DocumentStore store = new InMemoryDocumentStore(index);
+        DocumentStore store = new InMemoryDocumentStore(new SimpleDocumentIndex());
         String document = "foo bar baz";
         String documentId = "foo bar baz";
         store.insert(documentId, document);
@@ -21,7 +21,7 @@ public class InMemoryDocumentStoreTest {
 
     @Test
     public void testFindDocumentByKeyword() {
-        DocumentStore store = new InMemoryDocumentStore(index);
+        DocumentStore store = new InMemoryDocumentStore(new SimpleDocumentIndex());
 
         String document = "foo bar";
         String documentId = "123";
