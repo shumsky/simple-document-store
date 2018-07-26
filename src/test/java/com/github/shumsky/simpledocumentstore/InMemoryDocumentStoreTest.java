@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class DocumentStoreTest {
+public class InMemoryDocumentStoreTest {
 
     @Test
     public void testInsertAndFindDocument() {
