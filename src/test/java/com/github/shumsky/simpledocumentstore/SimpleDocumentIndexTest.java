@@ -7,14 +7,14 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DocumentIndexTest {
+public class SimpleDocumentIndexTest {
 
     @Test
     public void testIndexDocument() {
         String document = "foo bar";
         String documentId = "123";
 
-        DocumentIndex index = new DocumentIndex();
+        DocumentIndex index = new SimpleDocumentIndex();
         index.add(document, documentId);
 
         Set<String> fooDocuments = index.search("foo");
