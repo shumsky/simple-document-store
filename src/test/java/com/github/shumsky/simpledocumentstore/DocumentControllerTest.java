@@ -9,9 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,14 +26,26 @@ public class DocumentControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testFindDocument() throws Exception {
+    public void testGetDocument() throws Exception {
         String document = "my document";
+        String documentId = "123";
 
-        when(store.find(anyString())).thenReturn(document);
+        when(store.find(documentId)).thenReturn(document);
 
-        mockMvc.perform(get("/123").accept(MediaType.TEXT_PLAIN))
+        mockMvc.perform(get("/{id}", documentId).accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/plain;charset=UTF-8"))
                 .andExpect(content().bytes(document.getBytes()));
+    }
+
+    @Test
+    public void testPutDocument() throws Exception {
+        String document = "my document";
+        String documentId = "123";
+
+        when(store.insert(document)).thenReturn(documentId);
+
+        mockMvc.perform(put("/{id}", documentId).contentType(MediaType.TEXT_PLAIN).content(document))
+                .andExpect(status().isCreated());
     }
 }
