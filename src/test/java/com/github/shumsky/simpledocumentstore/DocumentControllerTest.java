@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -43,9 +45,9 @@ public class DocumentControllerTest {
         String document = "my document";
         String documentId = "123";
 
-        when(store.insert(document)).thenReturn(documentId);
-
         mockMvc.perform(put("/{id}", documentId).contentType(MediaType.TEXT_PLAIN).content(document))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated()).andReturn();
+
+        verify(store).insert(documentId, document);
     }
 }

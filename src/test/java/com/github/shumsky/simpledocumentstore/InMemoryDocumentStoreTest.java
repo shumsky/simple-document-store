@@ -10,7 +10,8 @@ public class InMemoryDocumentStoreTest {
     public void testInsertAndFindDocument() {
         DocumentStore store = new InMemoryDocumentStore();
         String document = "foo bar baz";
-        String documentId = store.insert(document);
+        String documentId = "foo bar baz";
+        store.insert(documentId, document);
         String foundDocument = store.find(documentId);
         assertEquals(document, foundDocument);
     }
