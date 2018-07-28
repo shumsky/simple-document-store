@@ -44,6 +44,20 @@ public class InMemoryDocumentStore implements DocumentStore {
     @Override
     public Set<String> findByKeywords(String... keywords) {
 
+        Map<String, Integer> matches = Arrays.stream(keywords).parallel()
+                .map(index::search)
+                .collect(createKeywordMatchesCollector());
+
+        Set<String> documentIds = matches.entrySet().parallelStream()
+                .filter(entry -> entry.getValue().equals(keywords.length))
+                .map(Map.Entry::getKey)
+                .collect(toSet());
+
+        return documentIds;
+    }
+
+    private static Collector<Set<String>, Map<String, Integer>, Map<String, Integer>> createKeywordMatchesCollector() {
+
         BiConsumer<Map<String, Integer>, Set<String>> accumulator = (matches, searchResult) -> {
             searchResult.forEach(id -> {
                 Integer counter = matches.getOrDefault(id, 0);
@@ -59,15 +73,6 @@ public class InMemoryDocumentStore implements DocumentStore {
             return matches1;
         };
 
-        Map<String, Integer> matches = Arrays.stream(keywords).parallel()
-                .map(index::search)
-                .collect(Collector.of(HashMap::new, accumulator, combiner));
-
-        Set<String> documentIds = matches.entrySet().parallelStream()
-                .filter(entry -> entry.getValue().equals(keywords.length))
-                .map(Map.Entry::getKey)
-                .collect(toSet());
-
-        return documentIds;
+        return Collector.of(HashMap::new, accumulator, combiner);
     }
 }
