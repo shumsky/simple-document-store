@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -66,7 +67,11 @@ public class DocumentControllerTest {
         String documentId1 = "101";
         String documentId2 = "102";
 
-        when(store.findByKeywords("token1", "token2")).thenReturn(Set.of(documentId1, documentId2));
+        Set<String> documentsIds = new HashSet<>();
+        documentsIds.add(documentId1);
+        documentsIds.add(documentId2);
+
+        when(store.findByKeywords("token1", "token2")).thenReturn(documentsIds);
 
         mockMvc.perform(get("?tokens=token1,token2").accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
