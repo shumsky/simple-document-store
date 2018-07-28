@@ -20,8 +20,10 @@ public class DocumentController {
     }
 
     @GetMapping("/documents/{documentId}")
-    public @ResponseBody String get(@PathVariable String documentId) {
-        return documentStore.find(documentId);
+    public @ResponseBody ResponseEntity<String> get(@PathVariable String documentId) {
+        return documentStore.find(documentId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/documents")

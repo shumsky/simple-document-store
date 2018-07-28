@@ -2,9 +2,11 @@ package com.github.shumsky.simpledocumentstore;
 
 import org.junit.Test;
 
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class InMemoryDocumentStoreTest {
@@ -15,8 +17,23 @@ public class InMemoryDocumentStoreTest {
         String document = "foo bar baz";
         String documentId = "123";
         store.insert(documentId, document);
-        String foundDocument = store.find(documentId);
-        assertEquals(document, foundDocument);
+
+        Optional<String> foundDocument = store.find(documentId);
+
+        assertTrue(foundDocument.isPresent());
+        assertEquals(document, foundDocument.get());
+    }
+
+    @Test
+    public void testFindNoDocument() {
+        DocumentStore store = new InMemoryDocumentStore(new SimpleDocumentIndex());
+        String document = "foo bar";
+        String documentId = "123";
+        store.insert(documentId, document);
+
+        Optional<String> foundDocument = store.find("200");
+
+        assertFalse(foundDocument.isPresent());
     }
 
     @Test

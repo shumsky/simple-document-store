@@ -3,14 +3,10 @@ package com.github.shumsky.simpledocumentstore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
-import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 import static java.util.stream.Collectors.toSet;
@@ -33,8 +29,8 @@ public class InMemoryDocumentStore implements DocumentStore {
     }
 
     @Override
-    public String find(String documentId) {
-        return documents.get(documentId);
+    public Optional<String> find(String documentId) {
+        return Optional.ofNullable(documents.get(documentId));
     }
 
     @Override

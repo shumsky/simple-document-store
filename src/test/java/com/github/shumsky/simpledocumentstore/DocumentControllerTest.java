@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -36,12 +37,22 @@ public class DocumentControllerTest {
         String document = "my document";
         String documentId = "123";
 
-        when(store.find(documentId)).thenReturn(document);
+        when(store.find(documentId)).thenReturn(Optional.of(document));
 
         mockMvc.perform(get("/documents/{id}", documentId).accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/plain;charset=UTF-8"))
                 .andExpect(content().bytes(document.getBytes()));
+    }
+
+    @Test
+    public void testGetDocumentNotFound() throws Exception {
+        String documentId = "123";
+
+        when(store.find(documentId)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/documents/{id}", documentId).accept(MediaType.TEXT_PLAIN))
+                .andExpect(status().isNotFound());
     }
 
     @Test
