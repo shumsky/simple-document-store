@@ -13,6 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -63,9 +66,10 @@ public class DocumentControllerTest {
 
         when(store.findByKeywords("token1", "token2")).thenReturn(Set.of(documentId1, documentId2));
 
-        mockMvc.perform(get("/?tokens=token1,token2").accept(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(get("?tokens=token1,token2").accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$").value("[\"101\", \"102\"]"));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", containsInAnyOrder(documentId1, documentId2)));
     }
 }

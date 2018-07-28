@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Set;
+
 @RestController("/documents")
 public class DocumentController {
 
@@ -18,6 +20,11 @@ public class DocumentController {
     @GetMapping("/{documentId}")
     public @ResponseBody String get(@PathVariable String documentId) {
         return documentStore.find(documentId);
+    }
+
+    @GetMapping("/")
+    public @ResponseBody Set<String> getByTerms(@RequestParam("tokens") String tokens) {
+        return documentStore.findByKeywords(tokens.split(","));
     }
 
     @PutMapping("/{documentId}")
