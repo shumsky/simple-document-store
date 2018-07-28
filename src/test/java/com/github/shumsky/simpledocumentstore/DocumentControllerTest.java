@@ -1,5 +1,6 @@
 package com.github.shumsky.simpledocumentstore;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -49,5 +54,18 @@ public class DocumentControllerTest {
                 .andExpect(status().isCreated()).andReturn();
 
         verify(store).insert(documentId, document);
+    }
+
+    @Test
+    public void testGetDocumentsByTokens() throws Exception {
+        String documentId1 = "101";
+        String documentId2 = "102";
+
+        when(store.findByKeywords("token1", "token2")).thenReturn(Set.of(documentId1, documentId2));
+
+        mockMvc.perform(get("/?tokens=token1,token2").accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$").value("[\"101\", \"102\"]"));
     }
 }
