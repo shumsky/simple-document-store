@@ -1,4 +1,4 @@
-package com.github.shumsky.simpledocumentstore;
+package com.github.shumsky.simpledocumentstore.store;
 
 import org.springframework.stereotype.Component;
 

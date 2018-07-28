@@ -1,4 +1,4 @@
-package com.github.shumsky.simpledocumentstore;
+package com.github.shumsky.simpledocumentstore.store;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,6 @@
 package com.github.shumsky.simpledocumentstore;
 
+import com.github.shumsky.simpledocumentstore.store.DocumentStore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,7 @@
 package com.github.shumsky.simpledocumentstore;
 
+import com.github.shumsky.simpledocumentstore.store.DocumentIndex;
+import com.github.shumsky.simpledocumentstore.store.SimpleDocumentIndex;
 import org.junit.Test;
 
 import java.util.Set;

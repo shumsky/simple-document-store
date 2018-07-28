@@ -1,4 +1,4 @@
-package com.github.shumsky.simpledocumentstore;
+package com.github.shumsky.simpledocumentstore.store;
 
 import java.util.Optional;
 import java.util.Set;

@@ -1,5 +1,8 @@
 package com.github.shumsky.simpledocumentstore;
 
+import com.github.shumsky.simpledocumentstore.store.DocumentStore;
+import com.github.shumsky.simpledocumentstore.store.InMemoryDocumentStore;
+import com.github.shumsky.simpledocumentstore.store.SimpleDocumentIndex;
 import org.junit.Test;
 
 import java.util.Optional;

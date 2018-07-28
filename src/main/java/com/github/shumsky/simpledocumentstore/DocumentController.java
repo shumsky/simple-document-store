@@ -1,15 +1,14 @@
 package com.github.shumsky.simpledocumentstore;
 
+import com.github.shumsky.simpledocumentstore.store.DocumentStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.util.Set;
 
-@RestController()
+@RestController
 public class DocumentController {
 
     private final DocumentStore documentStore;
