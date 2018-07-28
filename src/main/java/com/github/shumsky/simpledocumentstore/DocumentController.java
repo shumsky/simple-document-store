@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-@RestController("/documents")
+@RestController()
 public class DocumentController {
 
     private final DocumentStore documentStore;
@@ -19,12 +19,12 @@ public class DocumentController {
         this.documentStore = documentStore;
     }
 
-    @GetMapping("/{documentId}")
+    @GetMapping("/documents/{documentId}")
     public @ResponseBody String get(@PathVariable String documentId) {
         return documentStore.find(documentId);
     }
 
-    @GetMapping("/")
+    @GetMapping("/documents")
     public @ResponseBody Set<String> getByTerms(@RequestParam("tokens") String tokens) {
         if (tokens.isEmpty()) {
             throw new IllegalArgumentException("'tokens' must be non-empty");
@@ -32,7 +32,7 @@ public class DocumentController {
         return documentStore.findByKeywords(tokens.split(","));
     }
 
-    @PutMapping("/{documentId}")
+    @PutMapping("/documents/{documentId}")
     public ResponseEntity<Void> add(@PathVariable String documentId, @RequestBody String document, UriComponentsBuilder b) {
         documentStore.insert(documentId, document);
         return ResponseEntity.created(b.path("/documents/{id}").build(documentId)).build();

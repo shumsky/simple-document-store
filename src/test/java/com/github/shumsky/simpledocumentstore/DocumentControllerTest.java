@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ public class DocumentControllerTest {
 
         when(store.find(documentId)).thenReturn(document);
 
-        mockMvc.perform(get("/{id}", documentId).accept(MediaType.TEXT_PLAIN))
+        mockMvc.perform(get("/documents/{id}", documentId).accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/plain;charset=UTF-8"))
                 .andExpect(content().bytes(document.getBytes()));
@@ -48,7 +49,7 @@ public class DocumentControllerTest {
         String document = "my document";
         String documentId = "123";
 
-        mockMvc.perform(put("/{id}", documentId).contentType(MediaType.TEXT_PLAIN).content(document))
+        mockMvc.perform(put("/documents/{id}", documentId).contentType(MediaType.TEXT_PLAIN).content(document))
                 .andExpect(status().isCreated()).andReturn();
 
         verify(store).insert(documentId, document);
@@ -58,7 +59,7 @@ public class DocumentControllerTest {
     public void testPutEmptyDocument() throws Exception {
         String documentId = "123";
 
-        mockMvc.perform(put("/{id}", documentId).contentType(MediaType.TEXT_PLAIN))
+        mockMvc.perform(put("/documents/{id}", documentId).contentType(MediaType.TEXT_PLAIN))
                 .andExpect(status().isBadRequest()).andReturn();
     }
 
@@ -73,7 +74,7 @@ public class DocumentControllerTest {
 
         when(store.findByKeywords("token1", "token2")).thenReturn(documentsIds);
 
-        mockMvc.perform(get("?tokens=token1,token2").accept(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(get("/documents?tokens=token1,token2").accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -81,14 +82,24 @@ public class DocumentControllerTest {
     }
 
     @Test
+    public void testGetNoDocumentsByToken() throws Exception {
+        when(store.findByKeywords("token1")).thenReturn(Collections.emptySet());
+
+        mockMvc.perform(get("/documents?tokens=token1").accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
     public void testGetDocumentsByEmptyTokenList() throws Exception {
-        mockMvc.perform(get("?tokens=").accept(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(get("/documents?tokens=").accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testGetAllDocuments() throws Exception {
-        mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(get("/documents").accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }
 }
