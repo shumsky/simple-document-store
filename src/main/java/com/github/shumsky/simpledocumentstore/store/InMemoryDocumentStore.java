@@ -1,5 +1,7 @@
 package com.github.shumsky.simpledocumentstore.store;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,8 @@ import static java.util.stream.Collectors.toSet;
 
 @Component
 public class InMemoryDocumentStore implements DocumentStore {
+
+    private static final Logger LOG = LoggerFactory.getLogger(InMemoryDocumentStore.class);
 
     private final ConcurrentHashMap<String, String> documents = new ConcurrentHashMap<>();
     private final DocumentIndex index;
@@ -34,6 +38,8 @@ public class InMemoryDocumentStore implements DocumentStore {
 
         documents.put(documentId, document);
         index.add(document, documentId);
+
+        LOG.info("Inserted and indexed a key={}", documentId);
     }
 
     @Override
