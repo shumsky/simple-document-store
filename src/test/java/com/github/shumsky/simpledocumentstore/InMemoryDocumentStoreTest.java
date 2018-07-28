@@ -78,17 +78,36 @@ public class InMemoryDocumentStoreTest {
     public void testFindDocumentByMultipleKeywords() {
         DocumentStore store = new InMemoryDocumentStore(new SimpleDocumentIndex());
 
-        String document = "foo bar";
-        String documentId = "101";
+        String document1 = "foo bar";
+        String documentId1 = "101";
         String document2 = "foo bar baz";
         String documentId2 = "102";
 
-        store.insert(documentId, document);
+        store.insert(documentId1, document1);
         store.insert(documentId2, document2);
 
         Set<String> foundDocumentIds = store.findByKeywords("foo", "baz");
 
         assertEquals(foundDocumentIds.size(), 1);
+        assertTrue(foundDocumentIds.contains(documentId2));
+    }
+
+    @Test
+    public void testFindDocumentByMultipleSameKeywords() {
+        DocumentStore store = new InMemoryDocumentStore(new SimpleDocumentIndex());
+
+        String document1 = "foo bar";
+        String documentId1 = "101";
+        String document2 = "foo bar baz";
+        String documentId2 = "102";
+
+        store.insert(documentId1, document1);
+        store.insert(documentId2, document2);
+
+        Set<String> foundDocumentIds = store.findByKeywords("bar", "bar");
+
+        assertEquals(foundDocumentIds.size(), 2);
+        assertTrue(foundDocumentIds.contains(documentId1));
         assertTrue(foundDocumentIds.contains(documentId2));
     }
 

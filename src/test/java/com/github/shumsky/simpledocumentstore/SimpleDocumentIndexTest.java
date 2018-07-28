@@ -28,6 +28,20 @@ public class SimpleDocumentIndexTest {
     }
 
     @Test
+    public void testIndexDocumentWithRepeatingWords() {
+        String document = "foo foo bar foo";
+        String documentId = "123";
+
+        DocumentIndex index = new SimpleDocumentIndex();
+        index.add(document, documentId);
+
+        Set<String> fooDocuments = index.search("foo");
+
+        assertEquals(fooDocuments.size(), 1);
+        assertTrue(fooDocuments.contains(documentId));
+    }
+
+    @Test
     public void testSearchMultipleDocuments() {
         String document1 = "foo bar";
         String documentId1 = "101";
