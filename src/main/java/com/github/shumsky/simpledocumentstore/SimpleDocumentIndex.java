@@ -14,8 +14,8 @@ public class SimpleDocumentIndex implements DocumentIndex {
     public void add(String document, String documentId) {
         String[] keywords = document.split(" ");
         Arrays.asList(keywords).forEach(keyword -> {
-            index.computeIfAbsent(keyword, k -> new LinkedHashSet<>());
-            index.computeIfPresent(keyword, (k, v) -> {
+            index.computeIfAbsent(keyword, k -> new HashSet<>());
+            index.compute(keyword, (k, v) -> {
                 v.add(documentId);
                 return v;
             });

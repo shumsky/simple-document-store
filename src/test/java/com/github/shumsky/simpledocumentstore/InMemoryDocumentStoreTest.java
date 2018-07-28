@@ -36,6 +36,16 @@ public class InMemoryDocumentStoreTest {
         assertFalse(foundDocument.isPresent());
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testDoesNotAllowToOverwriteKey() {
+        DocumentStore store = new InMemoryDocumentStore(new SimpleDocumentIndex());
+        String document = "foo bar";
+        String document2 = "baz";
+        String documentId = "123";
+        store.insert(documentId, document);
+        store.insert(documentId, document2);
+    }
+
     @Test
     public void testFindDocumentByKeyword() {
         DocumentStore store = new InMemoryDocumentStore(new SimpleDocumentIndex());

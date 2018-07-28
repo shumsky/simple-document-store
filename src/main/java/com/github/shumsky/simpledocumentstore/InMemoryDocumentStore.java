@@ -24,6 +24,11 @@ public class InMemoryDocumentStore implements DocumentStore {
 
     @Override
     public void insert(String documentId, String document) {
+        String existingDocument = documents.get(documentId);
+        if (existingDocument != null && !existingDocument.equals(document)) {
+            throw new UnsupportedOperationException("Overwrite of a key is not supported");
+        }
+
         documents.put(documentId, document);
         index.add(document, documentId);
     }
