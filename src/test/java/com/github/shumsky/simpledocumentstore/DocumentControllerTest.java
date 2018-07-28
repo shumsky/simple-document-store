@@ -1,6 +1,5 @@
 package com.github.shumsky.simpledocumentstore;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,20 +9,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(DocumentController.class)
@@ -60,6 +54,14 @@ public class DocumentControllerTest {
     }
 
     @Test
+    public void testPutEmptyDocument() throws Exception {
+        String documentId = "123";
+
+        mockMvc.perform(put("/{id}", documentId).contentType(MediaType.TEXT_PLAIN))
+                .andExpect(status().isBadRequest()).andReturn();
+    }
+
+    @Test
     public void testGetDocumentsByTokens() throws Exception {
         String documentId1 = "101";
         String documentId2 = "102";
@@ -71,5 +73,17 @@ public class DocumentControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$", containsInAnyOrder(documentId1, documentId2)));
+    }
+
+    @Test
+    public void testGetDocumentsByEmptyTokenList() throws Exception {
+        mockMvc.perform(get("?tokens=").accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetAllDocuments() throws Exception {
+        mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
     }
 }

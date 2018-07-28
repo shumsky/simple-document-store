@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @RestController("/documents")
@@ -24,6 +26,9 @@ public class DocumentController {
 
     @GetMapping("/")
     public @ResponseBody Set<String> getByTerms(@RequestParam("tokens") String tokens) {
+        if (tokens.isEmpty()) {
+            throw new IllegalArgumentException("'tokens' must be non-empty");
+        }
         return documentStore.findByKeywords(tokens.split(","));
     }
 
@@ -31,5 +36,10 @@ public class DocumentController {
     public ResponseEntity<Void> add(@PathVariable String documentId, @RequestBody String document, UriComponentsBuilder b) {
         documentStore.insert(documentId, document);
         return ResponseEntity.created(b.path("/documents/{id}").build(documentId)).build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Void> exceptionHandler() {
+        return ResponseEntity.badRequest().build();
     }
 }
