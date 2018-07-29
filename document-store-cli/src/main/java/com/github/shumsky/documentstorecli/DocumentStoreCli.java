@@ -7,7 +7,10 @@ import static java.util.stream.Collectors.joining;
 
 public class DocumentStoreCli {
 
-    private static final String USAGE = "Usage: ...";
+    private static final String USAGE = "Usage: \n" +
+            "  -put <key> <value> - put a document\n" +
+            "  -get <key> - get a document by key\n" +
+            "  -search <token1> <token2> ... <tokenN> - search document IDs by tokens\n";
 
     private static final String COMMAND_PUT = "-put";
     private static final String COMMAND_GET = "-get";
