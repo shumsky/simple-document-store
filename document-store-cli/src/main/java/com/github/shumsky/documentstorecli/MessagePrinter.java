@@ -1,6 +1,6 @@
 package com.github.shumsky.documentstorecli;
 
-public interface ResponsePrinter {
+public interface MessagePrinter {
 
     void print(String message);
 }

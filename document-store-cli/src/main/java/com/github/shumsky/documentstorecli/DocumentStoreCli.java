@@ -15,16 +15,16 @@ public class DocumentStoreCli {
     private static final String MESSAGE_NOT_FOUND = "[Not found]";
 
     private final DocumentStoreClient client;
-    private final ResponsePrinter printer;
+    private final MessagePrinter printer;
 
-    public DocumentStoreCli(DocumentStoreClient client, ResponsePrinter printer) {
+    public DocumentStoreCli(DocumentStoreClient client, MessagePrinter printer) {
         this.client = client;
         this.printer = printer;
     }
 
     public static void main(String[] args) {
         DocumentStoreHttpClient client = new DocumentStoreHttpClient("localhost", 8500);
-        StdoutResponsePrinter printer = new StdoutResponsePrinter();
+        StdoutMessagePrinter printer = new StdoutMessagePrinter();
         try {
             new DocumentStoreCli(client, printer).run(args);
         } catch (CliArgSyntaxException e) {
@@ -34,9 +34,17 @@ public class DocumentStoreCli {
 
     public void run(String... args) throws CliArgSyntaxException {
         Map<String, List<String>> parsedArgs = parseArgs(args);
+
         validate(parsedArgs);
 
+        try {
+            process(parsedArgs);
+        } catch (DocumentStoreClientException e) {
+            printer.print("[Error: " + e.getMessage() + "]");
+        }
+    }
 
+    private void process(Map<String, List<String>> parsedArgs) {
         if (parsedArgs.containsKey(COMMAND_PUT)) {
 
             List<String> values = parsedArgs.get(COMMAND_PUT);
@@ -61,7 +69,7 @@ public class DocumentStoreCli {
         }
     }
 
-    private Map<String, List<String>> parseArgs(String[] args) {
+    private Map<String, List<String>> parseArgs(String[] args) throws CliArgSyntaxException {
         Map<String, List<String>> parsedArgs = new HashMap<>();
         List<String> currentParamValues = null;
 
@@ -70,6 +78,9 @@ public class DocumentStoreCli {
                 currentParamValues = new ArrayList<>();
                 parsedArgs.put(args[i], currentParamValues);
             } else {
+                if (currentParamValues == null) {
+                    throw new CliArgSyntaxException();
+                }
                 currentParamValues.add(args[i]);
             }
         }

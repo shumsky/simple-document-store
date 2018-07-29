@@ -1,6 +1,6 @@
 package com.github.shumsky.documentstorecli;
 
-public class StdoutResponsePrinter implements ResponsePrinter {
+public class StdoutMessagePrinter implements MessagePrinter {
 
     @Override
     public void print(String message) {

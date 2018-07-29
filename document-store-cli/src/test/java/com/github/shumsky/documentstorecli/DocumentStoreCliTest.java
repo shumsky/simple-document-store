@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.mockito.Matchers.any;
@@ -13,13 +14,13 @@ import static org.mockito.Mockito.*;
 public class DocumentStoreCliTest {
 
     private DocumentStoreClient client;
-    private ResponsePrinter printer;
+    private MessagePrinter printer;
     private DocumentStoreCli cli;
 
     @Before
     public void init() {
         client = mock(DocumentStoreClient.class);
-        printer = mock(ResponsePrinter.class);
+        printer = mock(MessagePrinter.class);
         cli = new DocumentStoreCli(client, printer);
     }
 
@@ -60,6 +61,26 @@ public class DocumentStoreCliTest {
         verify(printer).print(documentIds);
     }
 
+    @Test
+    public void testSearchEmptyResult() throws Exception {
+        String token1 = "token1";
+        when(client.getByTokens(any())).thenReturn(Collections.emptyList());
+
+        cli.run("-search", token1);
+
+        verify(printer).print(contains("Not found"));
+    }
+
+    @Test
+    public void testClientError() throws Exception {
+        String error = "Server error";
+        when(client.get(any())).thenThrow(new DocumentStoreClientException(error));
+
+        cli.run("-get", "123");
+
+        verify(printer).print(contains(error));
+    }
+
     @Test(expected = CliArgSyntaxException.class)
     public void testPutNoValues() throws Exception {
         cli.run("-put");
@@ -88,5 +109,10 @@ public class DocumentStoreCliTest {
     @Test(expected = CliArgSyntaxException.class)
     public void testUnknownCommand() throws Exception {
         cli.run("-unknown", "123");
+    }
+
+    @Test(expected = CliArgSyntaxException.class)
+    public void testUnknownArgs() throws Exception {
+        cli.run("unknown");
     }
 }
