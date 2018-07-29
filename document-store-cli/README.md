@@ -1,8 +1,8 @@
 # document-store-cli
 
-A CLI for simple-document-store
+A CLI for simple-document-store.
 
-### How to use
+## How to use
 Build a binary:
 ```
 $ mvn clean package
@@ -18,7 +18,7 @@ Usage:
   -get <key> - get a document by key
   -search <token1> <token2> ... <tokenN> - search document IDs by tokens
 ```
-#### Examples of commands:
+### Examples of commands:
 Put a document:
 ```
 $ dscli -put 123 "I love apples"
