@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DocumentStoreHttpClientTest {
 
-    private static final int PORT = 8500;
+    private static final int PORT = 8600;
     private static final String CONTENT_TYPE_TEXT = "text/plain; charset=UTF-8";
     private static final String CONTENT_TYPE_JSON = "application/json; charset=UTF-8";
 
