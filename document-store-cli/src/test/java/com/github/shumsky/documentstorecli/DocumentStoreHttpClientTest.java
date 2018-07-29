@@ -15,19 +15,36 @@ import static org.junit.Assert.assertTrue;
 
 public class DocumentStoreHttpClientTest {
 
+    private static final int PORT = 8500;
+    private static final String CONTENT_TYPE = "text/plain; charset=UTF-8";
+
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8500);
+    public WireMockRule wireMockRule = new WireMockRule(PORT);
 
     private DocumentStoreClient client;
 
     @Before
     public void init() {
-        client = new DocumentStoreHttpClient("localhost", 8500);
+        client = new DocumentStoreHttpClient("localhost", PORT);
     }
 
     @After
     public void after() throws IOException {
         client.close();
+    }
+
+    @Test
+    public void testPutDocument() {
+        String document = "some document";
+
+        stubFor(put(urlEqualTo("/documents/123"))
+                .willReturn(aResponse().withStatus(200)));
+
+        client.put("123", document);
+
+        verify(putRequestedFor(urlEqualTo("/documents/123"))
+                .withHeader("Content-Type", equalTo(CONTENT_TYPE))
+                .withRequestBody(matching(document)));
     }
 
     @Test
@@ -37,6 +54,7 @@ public class DocumentStoreHttpClientTest {
         stubFor(get(urlEqualTo("/documents/123"))
                 .willReturn(aResponse()
                         .withStatus(200)
+                        .withHeader("Content-Type", CONTENT_TYPE)
                         .withBody(document)));
 
         Optional<String> foundDocument = client.get("123");
