@@ -12,7 +12,13 @@ public class DocumentStoreCli {
     private static final String COMMAND_PUT = "-put";
     private static final String COMMAND_GET = "-get";
     private static final String COMMAND_SEARCH = "-search";
+
     private static final String MESSAGE_NOT_FOUND = "[Not found]";
+    private static final String MESSAGE_PUT_KEY = "[Put key '%s']";
+    private static final String MESSAGE_ERROR = "[Error: %s]";
+
+    private static final String DEFAULT_HOST = "localhost";
+    private static final int DEFAULT_PORT = 8500;
 
     private final DocumentStoreClient client;
     private final MessagePrinter printer;
@@ -23,7 +29,7 @@ public class DocumentStoreCli {
     }
 
     public static void main(String[] args) {
-        DocumentStoreHttpClient client = new DocumentStoreHttpClient("localhost", 8500);
+        DocumentStoreHttpClient client = new DocumentStoreHttpClient(DEFAULT_HOST, DEFAULT_PORT);
         StdoutMessagePrinter printer = new StdoutMessagePrinter();
         try {
             new DocumentStoreCli(client, printer).run(args);
@@ -40,7 +46,7 @@ public class DocumentStoreCli {
         try {
             process(parsedArgs);
         } catch (DocumentStoreClientException e) {
-            printer.print("[Error: " + e.getMessage() + "]");
+            printer.print(String.format(MESSAGE_ERROR, e.getMessage()));
         }
     }
 
@@ -49,7 +55,7 @@ public class DocumentStoreCli {
 
             List<String> values = parsedArgs.get(COMMAND_PUT);
             client.put(values.get(0), values.get(1));
-            printer.print("[Put key + '" + values.get(0) + "']");
+            printer.print(String.format(MESSAGE_PUT_KEY, values.get(0)));
 
         } else if (parsedArgs.containsKey(COMMAND_GET)) {
 
@@ -61,6 +67,7 @@ public class DocumentStoreCli {
 
             List<String> values = parsedArgs.get(COMMAND_SEARCH);
             Collection<String> documentIds = client.getByTokens(values);
+
             if (!documentIds.isEmpty()) {
                 printer.print(documentIds.stream().collect(joining(", ")));
             } else {
