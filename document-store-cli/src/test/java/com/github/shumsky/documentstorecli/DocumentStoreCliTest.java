@@ -2,10 +2,12 @@ package com.github.shumsky.documentstorecli;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Optional;
 
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,16 +33,18 @@ public class DocumentStoreCliTest {
         cli.run("-put", key, document);
 
         verify(client).put(key, document);
+        verify(printer).print(contains(key));
     }
 
     @Test
     public void testGetDocument() {
         String key = "123";
         String document = "some document";
-        when(client.get(key)).thenReturn(Optional.of(document));
+        when(client.get(any())).thenReturn(Optional.of(document));
 
         cli.run("-get", key);
 
+        verify(client).get(key);
         verify(printer).print(document);
     }
 
@@ -49,11 +53,12 @@ public class DocumentStoreCliTest {
         String documentIds = "101, 102, 103";
         String token1 = "token1";
         String token2 = "token2";
-        when(client.getByTokens(Arrays.asList(token1, token2)))
+        when(client.getByTokens(any()))
                 .thenReturn(Arrays.asList(documentIds.split(", ")));
 
         cli.run("-search", token1, token2);
 
+        verify(client).getByTokens(Arrays.asList(token1, token2));
         verify(printer).print(documentIds);
     }
 }
