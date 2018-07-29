@@ -1,9 +1,12 @@
 package com.github.shumsky.documentstorecli;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -15,9 +18,20 @@ public class DocumentStoreHttpClientTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8500);
 
+    private DocumentStoreClient client;
+
+    @Before
+    public void init() {
+        client = new DocumentStoreHttpClient("localhost", 8500);
+    }
+
+    @After
+    public void after() throws IOException {
+        client.close();
+    }
+
     @Test
     public void testGetDocument() {
-        DocumentStoreClient client = new DocumentStoreHttpClient("localhost", 8500);
         String document = "some document";
 
         stubFor(get(urlEqualTo("/documents/123"))
