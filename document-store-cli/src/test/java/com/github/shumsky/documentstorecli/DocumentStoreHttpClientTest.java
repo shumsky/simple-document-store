@@ -19,12 +19,13 @@ import static org.junit.Assert.assertTrue;
 public class DocumentStoreHttpClientTest {
 
     private static final int PORT = 8500;
-    private static final String CONTENT_TYPE = "text/plain; charset=UTF-8";
+    private static final String CONTENT_TYPE_TEXT = "text/plain; charset=UTF-8";
+    private static final String CONTENT_TYPE_JSON = "application/json; charset=UTF-8";
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(PORT);
 
-    private DocumentStoreClient client;
+    private DocumentStoreClient client = new DocumentStoreHttpClient("localhost", PORT);
 
     @Before
     public void init() {
@@ -46,7 +47,7 @@ public class DocumentStoreHttpClientTest {
         client.put("123", document);
 
         verify(putRequestedFor(urlEqualTo("/documents/123"))
-                .withHeader("Content-Type", equalTo(CONTENT_TYPE))
+                .withHeader("Content-Type", equalTo(CONTENT_TYPE_TEXT))
                 .withRequestBody(matching(document)));
     }
 
@@ -66,7 +67,7 @@ public class DocumentStoreHttpClientTest {
         stubFor(get(urlEqualTo("/documents/123"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", CONTENT_TYPE)
+                        .withHeader("Content-Type", CONTENT_TYPE_TEXT)
                         .withBody(document)));
 
         Optional<String> foundDocument = client.get("123");
@@ -100,7 +101,7 @@ public class DocumentStoreHttpClientTest {
         stubFor(get(urlEqualTo("/documents?tokens=token1,token2"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", CONTENT_TYPE)
+                        .withHeader("Content-Type", CONTENT_TYPE_JSON)
                         .withBody("[\"101\", \"102\"]")));
 
         Collection<String> documentIds = client.getByTokens(Arrays.asList("token1", "token2"));
@@ -111,12 +112,55 @@ public class DocumentStoreHttpClientTest {
     }
 
     @Test(expected = DocumentStoreClientException.class)
+    public void testGetDocumentsByTokensInvalidResponse() {
+        stubFor(get(urlEqualTo("/documents?tokens=token1,token2"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", CONTENT_TYPE_TEXT)
+                        .withBody("not a JSON")));
+
+        client.getByTokens(Arrays.asList("token1", "token2"));
+    }
+
+    @Test(expected = DocumentStoreClientException.class)
+    public void testGetDocumentsByTokensInvalidResponseContent() {
+        stubFor(get(urlEqualTo("/documents?tokens=token1,token2"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", CONTENT_TYPE_JSON)
+                        .withBody("[{}, {}]")));
+
+        client.getByTokens(Arrays.asList("token1", "token2"));
+    }
+
+    @Test(expected = DocumentStoreClientException.class)
     public void testGetDocumentsByTokensError() {
         stubFor(get(urlEqualTo("/documents?tokens=token1,token2"))
                 .willReturn(aResponse()
-                        .withStatus(500)
-                        .withHeader("Content-Type", CONTENT_TYPE)));
+                        .withStatus(500)));
 
         client.getByTokens(Arrays.asList("token1", "token2"));
+    }
+
+    @Test(expected = DocumentStoreClientException.class)
+    public void testConnectionRefused() {
+        DocumentStoreClient badClient = new DocumentStoreHttpClient("localhost", 11111);
+
+        badClient.put("123", "some document");
+    }
+
+    @Test(expected = DocumentStoreClientException.class)
+    public void testNotResolvableHost() {
+        DocumentStoreClient badClient = new DocumentStoreHttpClient("not.resolvable", PORT);
+
+        badClient.put("123", "some document");
+    }
+
+    @Test(expected = DocumentStoreClientException.class)
+    public void testConnectionTimeout() {
+        int timeoutMillis = 500;
+        DocumentStoreClient badClient = new DocumentStoreHttpClient("10.1.1.1", PORT, timeoutMillis);
+
+        badClient.put("123", "some document");
     }
 }
