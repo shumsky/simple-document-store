@@ -1,4 +1,4 @@
-package com.github.shumsky.documentstorecli;
+package com.github.shumsky.documentstorecli.client;
 
 public class DocumentStoreClientException extends RuntimeException {
     public DocumentStoreClientException() {

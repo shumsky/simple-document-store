@@ -1,5 +1,7 @@
 package com.github.shumsky.documentstorecli;
 
+import com.github.shumsky.documentstorecli.client.DocumentStoreClient;
+import com.github.shumsky.documentstorecli.client.DocumentStoreClientException;
 import org.junit.Before;
 import org.junit.Test;
 

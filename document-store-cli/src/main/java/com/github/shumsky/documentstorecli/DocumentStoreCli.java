@@ -1,5 +1,9 @@
 package com.github.shumsky.documentstorecli;
 
+import com.github.shumsky.documentstorecli.client.DocumentStoreClient;
+import com.github.shumsky.documentstorecli.client.DocumentStoreClientException;
+import com.github.shumsky.documentstorecli.client.DocumentStoreHttpClient;
+
 import java.util.*;
 import java.util.stream.Stream;
 

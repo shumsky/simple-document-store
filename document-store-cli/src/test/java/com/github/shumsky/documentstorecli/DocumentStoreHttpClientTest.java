@@ -1,5 +1,8 @@
 package com.github.shumsky.documentstorecli;
 
+import com.github.shumsky.documentstorecli.client.DocumentStoreClient;
+import com.github.shumsky.documentstorecli.client.DocumentStoreClientException;
+import com.github.shumsky.documentstorecli.client.DocumentStoreHttpClient;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.After;
 import org.junit.Before;

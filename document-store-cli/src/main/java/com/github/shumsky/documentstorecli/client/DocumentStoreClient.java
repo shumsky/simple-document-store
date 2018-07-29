@@ -1,4 +1,4 @@
-package com.github.shumsky.documentstorecli;
+package com.github.shumsky.documentstorecli.client;
 
 import java.io.Closeable;
 import java.util.Collection;

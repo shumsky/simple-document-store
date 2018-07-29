@@ -1,4 +1,4 @@
-package com.github.shumsky.documentstorecli;
+package com.github.shumsky.documentstorecli.client;
 
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
