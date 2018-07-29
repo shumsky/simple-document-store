@@ -22,8 +22,8 @@ public class SimpleDocumentIndexTest {
         Set<String> fooDocuments = index.search("foo");
         Set<String> barDocuments = index.search("bar");
 
-        assertEquals(fooDocuments.size(), 1);
-        assertEquals(barDocuments.size(), 1);
+        assertEquals(1, fooDocuments.size());
+        assertEquals(1, barDocuments.size());
 
         assertTrue(fooDocuments.contains(documentId));
         assertTrue(barDocuments.contains(documentId));
@@ -39,7 +39,7 @@ public class SimpleDocumentIndexTest {
 
         Set<String> fooDocuments = index.search("foo");
 
-        assertEquals(fooDocuments.size(), 1);
+        assertEquals(1, fooDocuments.size());
         assertTrue(fooDocuments.contains(documentId));
     }
 
@@ -57,8 +57,8 @@ public class SimpleDocumentIndexTest {
         Set<String> fooDocuments = index.search("foo");
         Set<String> barDocuments = index.search("bar");
 
-        assertEquals(fooDocuments.size(), 1);
-        assertEquals(barDocuments.size(), 2);
+        assertEquals(1, fooDocuments.size());
+        assertEquals(2, barDocuments.size());
 
         assertTrue(fooDocuments.contains(documentId1));
         assertTrue(barDocuments.contains(documentId1));
@@ -75,7 +75,7 @@ public class SimpleDocumentIndexTest {
 
         Set<String> documents = index.search("absent");
 
-        assertEquals(documents.size(), 0);
+        assertEquals(0, documents.size());
     }
 
     @Test(expected = UnsupportedOperationException.class)

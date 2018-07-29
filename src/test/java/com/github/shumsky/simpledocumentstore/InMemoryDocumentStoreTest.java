@@ -59,7 +59,7 @@ public class InMemoryDocumentStoreTest {
 
         Set<String> foundDocumentIds = store.findByKeywords("bar");
 
-        assertEquals(foundDocumentIds.size(), 1);
+        assertEquals(1, foundDocumentIds.size());
         assertTrue(foundDocumentIds.contains(documentId));
     }
 
@@ -77,7 +77,7 @@ public class InMemoryDocumentStoreTest {
 
         Set<String> foundDocumentIds = store.findByKeywords("bar");
 
-        assertEquals(foundDocumentIds.size(), 2);
+        assertEquals(2, foundDocumentIds.size());
         assertTrue(foundDocumentIds.contains(documentId1));
         assertTrue(foundDocumentIds.contains(documentId2));
     }
@@ -99,7 +99,7 @@ public class InMemoryDocumentStoreTest {
 
         Set<String> foundDocumentIds = store.findByKeywords("baz", "bar");
 
-        assertEquals(foundDocumentIds.size(), 2);
+        assertEquals(2, foundDocumentIds.size());
         assertTrue(foundDocumentIds.contains(documentId2));
         assertTrue(foundDocumentIds.contains(documentId3));
     }
@@ -118,7 +118,7 @@ public class InMemoryDocumentStoreTest {
 
         Set<String> foundDocumentIds = store.findByKeywords("foo", "baz");
 
-        assertEquals(foundDocumentIds.size(), 1);
+        assertEquals(1, foundDocumentIds.size());
         assertTrue(foundDocumentIds.contains(documentId2));
     }
 
@@ -136,7 +136,7 @@ public class InMemoryDocumentStoreTest {
 
         Set<String> foundDocumentIds = store.findByKeywords("bar", "bar");
 
-        assertEquals(foundDocumentIds.size(), 2);
+        assertEquals(2, foundDocumentIds.size());
         assertTrue(foundDocumentIds.contains(documentId1));
         assertTrue(foundDocumentIds.contains(documentId2));
     }
