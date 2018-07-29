@@ -7,6 +7,8 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -61,5 +63,20 @@ public class DocumentStoreHttpClientTest {
 
         assertTrue(foundDocument.isPresent());
         assertEquals(document, foundDocument.get());
+    }
+
+    @Test
+    public void testGetDocumentsByTokens() {
+        stubFor(get(urlEqualTo("/documents?tokens=token1,token2"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", CONTENT_TYPE)
+                        .withBody("[\"101\", \"102\"]")));
+
+        Collection<String> documentIds = client.getByTokens(Arrays.asList("token1", "token2"));
+
+        assertEquals(2, documentIds.size());
+        assertTrue(documentIds.contains("101"));
+        assertTrue(documentIds.contains("102"));
     }
 }

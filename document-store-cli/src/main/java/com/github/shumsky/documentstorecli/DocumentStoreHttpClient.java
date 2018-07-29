@@ -10,11 +10,15 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class DocumentStoreHttpClient implements DocumentStoreClient {
 
@@ -70,7 +74,21 @@ public class DocumentStoreHttpClient implements DocumentStoreClient {
 
     @Override
     public Collection<String> getByTokens(Collection<String> tokens) {
-        return null;
+        String tokensParam = tokens.stream().collect(joining(","));
+        HttpGet httpGet = new HttpGet(baseUri + "/documents?tokens=" + tokensParam);
+        try {
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                String responseBody = EntityUtils.toString(response.getEntity(), "utf-8");
+                JSONArray documentIds = new JSONArray(responseBody);
+                return documentIds.toList().stream().map(Object::toString).collect(toList());
+            } else {
+                throw new RuntimeException();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
