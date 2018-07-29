@@ -46,10 +46,10 @@ public class DocumentStoreHttpClient implements DocumentStoreClient {
             CloseableHttpResponse response = httpClient.execute(httpPut);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != 201 && statusCode != 200) {
-                throw new RuntimeException();
+                throw new DocumentStoreClientException("Bad response: " + statusCode);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DocumentStoreClientException("Failed to communicate with DocumentStore", e);
         }
     }
 
@@ -65,10 +65,10 @@ public class DocumentStoreHttpClient implements DocumentStoreClient {
             } else if (statusCode == 404) {
                 return Optional.empty();
             } else {
-                throw new RuntimeException();
+                throw new DocumentStoreClientException("Bad response: " + statusCode);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DocumentStoreClientException("Failed to communicate with DocumentStore", e);
         }
     }
 
@@ -84,10 +84,10 @@ public class DocumentStoreHttpClient implements DocumentStoreClient {
                 JSONArray documentIds = new JSONArray(responseBody);
                 return documentIds.toList().stream().map(Object::toString).collect(toList());
             } else {
-                throw new RuntimeException();
+                throw new DocumentStoreClientException("Bad response: " + statusCode);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DocumentStoreClientException("Failed to communicate with DocumentStore", e);
         }
     }
 

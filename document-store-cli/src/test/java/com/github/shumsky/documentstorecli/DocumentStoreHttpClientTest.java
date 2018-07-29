@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class DocumentStoreHttpClientTest {
@@ -49,6 +50,15 @@ public class DocumentStoreHttpClientTest {
                 .withRequestBody(matching(document)));
     }
 
+    @Test(expected = DocumentStoreClientException.class)
+    public void testPutDocumentError() {
+
+        stubFor(put(urlEqualTo("/documents/123"))
+                .willReturn(aResponse().withStatus(500)));
+
+        client.put("123", "some document");
+    }
+
     @Test
     public void testGetDocument() {
         String document = "some document";
@@ -66,6 +76,26 @@ public class DocumentStoreHttpClientTest {
     }
 
     @Test
+    public void testGetDocumentNotFound() {
+        stubFor(get(urlEqualTo("/documents/123"))
+                .willReturn(aResponse()
+                        .withStatus(404)));
+
+        Optional<String> foundDocument = client.get("123");
+
+        assertFalse(foundDocument.isPresent());
+    }
+
+    @Test(expected = DocumentStoreClientException.class)
+    public void testGetDocumentError() {
+        stubFor(get(urlEqualTo("/documents/123"))
+                .willReturn(aResponse()
+                        .withStatus(500)));
+
+        client.get("123");
+    }
+
+    @Test
     public void testGetDocumentsByTokens() {
         stubFor(get(urlEqualTo("/documents?tokens=token1,token2"))
                 .willReturn(aResponse()
@@ -78,5 +108,15 @@ public class DocumentStoreHttpClientTest {
         assertEquals(2, documentIds.size());
         assertTrue(documentIds.contains("101"));
         assertTrue(documentIds.contains("102"));
+    }
+
+    @Test(expected = DocumentStoreClientException.class)
+    public void testGetDocumentsByTokensError() {
+        stubFor(get(urlEqualTo("/documents?tokens=token1,token2"))
+                .willReturn(aResponse()
+                        .withStatus(500)
+                        .withHeader("Content-Type", CONTENT_TYPE)));
+
+        client.getByTokens(Arrays.asList("token1", "token2"));
     }
 }
