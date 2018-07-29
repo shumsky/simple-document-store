@@ -2,15 +2,13 @@ package com.github.shumsky.documentstorecli;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.contains;
+import static org.mockito.Mockito.*;
 
 public class DocumentStoreCliTest {
 
@@ -26,7 +24,7 @@ public class DocumentStoreCliTest {
     }
 
     @Test
-    public void testPutDocument() {
+    public void testPut() throws Exception {
         String key = "123";
         String document = "some document";
 
@@ -37,7 +35,7 @@ public class DocumentStoreCliTest {
     }
 
     @Test
-    public void testGetDocument() {
+    public void testGet() throws Exception {
         String key = "123";
         String document = "some document";
         when(client.get(any())).thenReturn(Optional.of(document));
@@ -49,7 +47,7 @@ public class DocumentStoreCliTest {
     }
 
     @Test
-    public void testGetDocumentsByTokens() {
+    public void testSearch() throws Exception {
         String documentIds = "101, 102, 103";
         String token1 = "token1";
         String token2 = "token2";
@@ -60,5 +58,35 @@ public class DocumentStoreCliTest {
 
         verify(client).getByTokens(Arrays.asList(token1, token2));
         verify(printer).print(documentIds);
+    }
+
+    @Test(expected = CliArgSyntaxException.class)
+    public void testPutNoValues() throws Exception {
+        cli.run("-put");
+    }
+
+    @Test(expected = CliArgSyntaxException.class)
+    public void testPutMissingValue() throws Exception {
+        cli.run("-put", "123");
+    }
+
+    @Test(expected = CliArgSyntaxException.class)
+    public void testGetNoValues() throws Exception {
+        cli.run("-get");
+    }
+
+    @Test(expected = CliArgSyntaxException.class)
+    public void testSearchNoValues() throws Exception {
+        cli.run("-search");
+    }
+
+    @Test(expected = CliArgSyntaxException.class)
+    public void testNoArgs() throws Exception {
+        cli.run();
+    }
+
+    @Test(expected = CliArgSyntaxException.class)
+    public void testUnknownCommand() throws Exception {
+        cli.run("-unknown", "123");
     }
 }

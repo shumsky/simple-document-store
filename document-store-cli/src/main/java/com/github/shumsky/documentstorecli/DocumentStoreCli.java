@@ -1,6 +1,7 @@
 package com.github.shumsky.documentstorecli;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 
@@ -24,11 +25,17 @@ public class DocumentStoreCli {
     public static void main(String[] args) {
         DocumentStoreHttpClient client = new DocumentStoreHttpClient("localhost", 8500);
         StdoutResponsePrinter printer = new StdoutResponsePrinter();
-        new DocumentStoreCli(client, printer).run(args);
+        try {
+            new DocumentStoreCli(client, printer).run(args);
+        } catch (CliArgSyntaxException e) {
+            printer.print(USAGE);
+        }
     }
 
-    public void run(String... args) {
+    public void run(String... args) throws CliArgSyntaxException {
         Map<String, List<String>> parsedArgs = parseArgs(args);
+        validate(parsedArgs);
+
 
         if (parsedArgs.containsKey(COMMAND_PUT)) {
 
@@ -68,5 +75,25 @@ public class DocumentStoreCli {
         }
 
         return parsedArgs;
+    }
+
+    private void validate(Map<String, List<String>> parsedArgs) throws CliArgSyntaxException {
+
+        long commandsSpecified = Stream.of(COMMAND_PUT, COMMAND_GET, COMMAND_SEARCH)
+                .map(parsedArgs::get).filter(Objects::nonNull).count();
+
+        if (commandsSpecified != 1) {
+            throw new CliArgSyntaxException();
+        }
+
+        if (parsedArgs.containsKey(COMMAND_PUT) && parsedArgs.get(COMMAND_PUT).size() < 2) {
+            throw new CliArgSyntaxException();
+        }
+        if (parsedArgs.containsKey(COMMAND_GET) && parsedArgs.get(COMMAND_GET).size() < 1) {
+            throw new CliArgSyntaxException();
+        }
+        if (parsedArgs.containsKey(COMMAND_SEARCH) && parsedArgs.get(COMMAND_SEARCH).size() < 1) {
+            throw new CliArgSyntaxException();
+        }
     }
 }
