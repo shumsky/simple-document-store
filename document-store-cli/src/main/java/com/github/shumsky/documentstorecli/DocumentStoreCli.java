@@ -36,6 +36,7 @@ public class DocumentStoreCli {
     }
 
     public static void main(String[] args) {
+        //todo: allow to pass hostname and port via args
         DocumentStoreHttpClient client = new DocumentStoreHttpClient(DEFAULT_HOST, DEFAULT_PORT);
         StdoutMessagePrinter printer = new StdoutMessagePrinter();
         try {
