@@ -2,7 +2,7 @@
 
 A simple key value store with term-based search capability over stored values (documents).  
 
-## How to run:
+## How to run
 ```
 $ mvn clean spring-boot:run
 ```
@@ -15,7 +15,7 @@ Exposes a REST interface on port 8500 (overridable via `-Dserver.port=[port]`):
 ## CLI
 A CLI is available in [document-store-cli](https://github.com/shumsky/simple-document-store/tree/master/document-store-cli) sub-project
 
-## How to test:
+## How to test
 ```
 $ mvn clean test
 ```
