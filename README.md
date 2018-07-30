@@ -4,7 +4,7 @@ A simple key value store with term-based search capability over stored values (d
 
 How to run:
 ```
-$ mvn clean spring:run
+$ mvn clean spring-boot:run
 ```
 Exposes a REST interface on port 8500 (overridable via `-Dserver.port=[port]`):
 - `PUT /documents/{key}` - put a document
